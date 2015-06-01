@@ -1,9 +1,10 @@
-redis applicaton implementation
+redis applicaton implementation for string input
 
 This server supports three commands:
  1. SET 
  2. GET
  3. SAVE
+ All these commands are used only for stirng input.They get stored in <key,value> format.
 
 It will store all in memory data to the file provided while starting the server.
 Using SAVE command or when it revieves SIGINT , will save the data to file .
@@ -15,4 +16,18 @@ Server :
 
 Client:
   telnet to the server using 
-	 telent localhost 15000
+	  telent localhost 15000
+
+Demo:
+
+server : 
+  ./server dbfile
+
+client:
+  telnet localhost 15000
+	SET test app
+	+OK
+	GET test
+	$3
+	app
+	SAVE
