@@ -18,12 +18,12 @@ class MemoryDS{
 		std::string get(std::string &key);
 		void persistData();
 		void loadDataFromStorage();
-		void registerStorage(FileStorage *store);
+		void registerStorage(Storage *store);
 		void close();
 		void flush();
 
 	 private:
-		FileStorage *store;
+		Storage *store;
 };
 
 #endif

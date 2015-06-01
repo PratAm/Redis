@@ -29,10 +29,10 @@ int main ( int argc, char** argv )
 	if(argc !=2)
 		std::cout <<"Usage ./server <DbFilename>\n";
 
-	FileStorage *Db = new FileStorage(static_cast<std::string>(argv[1]));
+	FileStorage Db(static_cast<std::string>(argv[1]));
 	
 	// register the storage system
-	database.registerStorage(Db);
+	database.registerStorage(&Db);
 
 	// load the data from storage if any
 	database.loadDataFromStorage();

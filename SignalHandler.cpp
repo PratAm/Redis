@@ -18,6 +18,7 @@ void signalHandler( int signum )
 	cout << "Interrupt signal (" << signum << ") received.\n";
 
 	database.persistData();
+	database.close();
 //	database.flush();
 
   cout <<"saved data to file\n";

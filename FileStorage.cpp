@@ -25,7 +25,7 @@ bool FileStorage::f_read(std::string &a, std::string &b)
 
 void FileStorage::f_write(std::string a, std::string b)
 {
-  file <<a <<b <<std::endl ;
+  file <<a <<" " <<b <<std::endl ;
 }
 
 void FileStorage::f_flush()

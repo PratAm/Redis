@@ -21,19 +21,16 @@ std::string MemoryDS::get(std::string &key)
 	return result;
 }
 
-void MemoryDS::registerStorage(FileStorage *storage)
+void MemoryDS::registerStorage(Storage *storage)
 {
 	store = storage;
-	store->f_write("testing ","memory");
 }
 
 void MemoryDS::persistData()
 {
-  std::map<std::string,std::string>::iterator it;
-	assert(store->f_isopen() == true);
-	if(store->f_isopen())
-		std::cout << "file is open" <<std::endl;
-	store->f_write("testing"," application");
+	store->f_open();
+  
+	std::map<std::string,std::string>::iterator it;
   
 	for(it = data.begin();it != data.end();++it)
 	{
@@ -41,20 +38,30 @@ void MemoryDS::persistData()
 		a = it->first;
 		b = it->second;
 		store->f_write(a,b);
-	  MemoryDS::flush();
 	}
+	
+	store->f_close();
 }
 
 void MemoryDS::loadDataFromStorage()
 {
+	store->f_open();
+	
 	std::string a, b;
   while(store->f_read(a,b))
 	{
 		    data[a] = b;
 	}
+	
+	store->f_close();
 }
 
 void MemoryDS::flush()
 {
 	store->f_flush();
+}
+
+void MemoryDS::close()
+{
+	store->f_close();
 }

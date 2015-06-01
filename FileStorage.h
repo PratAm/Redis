@@ -10,7 +10,7 @@ class FileStorage:public Storage
 		explicit FileStorage(std::string str):
 			filename(str)
 	  {
-	  	f_open();
+//	  	f_open();
    	}
 		~FileStorage()
 		{

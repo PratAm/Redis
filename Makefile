@@ -15,6 +15,7 @@ $(TARGET): $(server_objects)
 
 
 # dependency for all .cpp files
+ServerMain.o:FileStorage.h MemoryDS.h
 Socket.o: Socket.h
 ServerSocket.o: ServerSocket.h
 SignalHandler.o: SignalHandler.h MemoryDS.h
