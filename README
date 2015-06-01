@@ -1,1 +1,18 @@
 redis applicaton implementation
+
+This server supports three commands:
+ 1. SET 
+ 2. GET
+ 3. SAVE
+
+It will store all in memory data to the file provided while starting the server.
+Using SAVE command or when it revieves SIGINT , will save the data to file .
+
+Server :
+
+ start server from terminal with
+   ./server <filename>
+
+Client:
+  telnet to the server using 
+	 telent localhost 15000
