@@ -4,6 +4,7 @@
 #include "FileStorage.h"
 #include "MemoryDS.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <csignal>
 #include <vector>
@@ -18,10 +19,10 @@ enum string_code {
 string_code hashit (std::string const& inString) {
 	if (inString == "GET") return GET;
 	if (inString == "SET") return SET;
-  if (inString == "SAVE") return SAVE;
+	if (inString == "SAVE") return SAVE;
 	return INVALID;
 }
-	
+
 MemoryDS database;
 
 int main ( int argc, char** argv )
@@ -30,18 +31,18 @@ int main ( int argc, char** argv )
 		std::cout <<"Usage ./server <DbFilename>\n";
 
 	FileStorage Db(static_cast<std::string>(argv[1]));
-	
+
 	// register the storage system
 	database.registerStorage(&Db);
 
 	// load the data from storage if any
 	database.loadDataFromStorage();
 
-  registerSignal();
+	registerSignal();
 
 	try
 	{
-	  std::cout << "Server starting on port 15000....\n";
+		std::cout << "Server starting on port 15000....\n";
 		ServerSocket server ( 15000 );
 
 		while ( true )
@@ -52,64 +53,69 @@ int main ( int argc, char** argv )
 			{
 				while ( true )
 				{
-					std::string input, input1;
+					std::string input;
 					server_sock >> input;
-					server_sock << input;
 
-					std::string delimiter = " ";
-					size_t pos = 0;
 					std::string key,value;
-					std::string token,result;
-					std::vector<std::string> inp;
+					std::string result;
 
-					if ((pos = input.find(delimiter)) != std::string::npos) 
-					{
-						token = input.substr(0, pos);
-						inp.push_back(token);
-						std::cout << token << std::endl;
-					  input.erase(0,pos+1);
+					// remove the last \r\n from input string
+					input.erase(input.size()-2);
 
-						int i =0;
-						switch(hashit(token))
-						{
-							case GET:
-								while(input[i] != '\r') i++;
-								
-								key = input.substr(0,i);
-								std::cout << key <<std::endl;
-								result = database.get(key);
-								server_sock <<"$3\n";
-								server_sock << result <<"\n";
-                break;
-							 
-							case SET:
-								if ((pos = input.find(delimiter)) != std::string::npos)
-								{
-									key = input.substr(0,pos);
-									std::cout << key <<std::endl;
-									input.erase(0, pos + 1);
-								}
-								i =0;
-								while(input[i] != '\r') i++;
+					// space for storing the tokens from input string
+					std::vector<std::string> token;
+					std::fill(token.begin(), token.end(), "");
 
-								value = input.substr(0,i);
-								std::cout << value <<std::endl;
-								database.add(key,value);
-								server_sock <<"+OK\n";
-								break;
-								
-							case SAVE:
-								database.persistData();
-								break;
+					// Parse the input and tokenize it and store in vector for further use
+					std::stringstream ss(input);
+					std::string s;
 
-							default:
-								server_sock << "-INVALID\n";
-								break;
-								
-						}
+					while (getline(ss, s, ' ')) {
+						token.push_back(s);
 					}
 
+					// Parese rest of input based on first token {SET,GET,SAVE}  
+					switch(hashit(token[0]))
+					{
+						case GET:
+							if (2 != token.size())
+								goto INVALID;
+
+							key = token[1];
+							result = database.get(key);
+
+							// Return the result of GET query
+							server_sock <<"$3\n";
+							server_sock << result <<"\n";
+							break;
+
+						case SET:
+							if (3 != token.size())
+								goto INVALID;
+
+							key = token[1];
+							value = token[2];
+
+							// Store the SET query in memory
+							database.add(key,value);
+							server_sock <<"+OK\n";
+
+							break;
+
+						case SAVE:
+							if (1 != token.size())
+								goto INVALID;
+							database.persistData();
+							server_sock <<"+OK\n";
+							break;
+INVALID:
+						default:
+							server_sock << "-INVALID\n";
+							break;
+
+					}
 				}
+
 			}
 			catch ( SocketException& ) {}
 		}
@@ -118,7 +124,7 @@ int main ( int argc, char** argv )
 	{
 		std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
 	}
-	
+
 
 	return 0;
 }

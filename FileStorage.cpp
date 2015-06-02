@@ -3,14 +3,12 @@
 
 int FileStorage::f_open()
 {
-	std::cout <<"opened DbFile\n";
   file.open(filename.c_str(), std::ios::in | std::ios::out | std::ios::app);
 	return 1;
 }
 
 void FileStorage::f_close()
 {
-	std::cout <<"closed DbFile\n";
 	file.close();
 }
 

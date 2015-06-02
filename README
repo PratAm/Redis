@@ -1,29 +1,46 @@
-redis applicaton implementation for string input
+                         ------------------------------------------------                                 
+                         Redis applicaton implementation for string input
+                         ------------------------------------------------
 
 This server supports three commands:
  1. SET 
- 2. GET
- 3. SAVE
+ 2. GET <key>
+ 3. SAVE <key> <value>
  All these commands are used only for stirng input.They get stored in <key,value> format.
 
 It will store all in memory data to the file provided while starting the server.
-Using SAVE command or when it revieves SIGINT , will save the data to file .
+Using SAVE command or when it revieves SIGINT , will save the data to file which is provided
+as argument when starting the server. The same file will be scanned also for <name/value> data
+as loaded in memory if any.
 
-Server :
+--------------------------------------------------------------------
+ BEHAVIOUR:
+--------------------------------------------------------------------
 
- start server from terminal with
-   ./server <filename>
+		--------------------------------
+		|        I/P        |     O/P   | 
+		---------------------------------
+		|  SAVE             |    +OK    |
+		---------------------------------
+		|  GET <key>        |    $3     |
+		|                   |    <value>|
+		---------------------------------
+		|  SET <key> <value>|    +OK    |
+		---------------------------------
 
-Client:
-  telnet to the server using 
-	  telent localhost 15000
+For all other incomplete command -INVALID is O/P.
 
-Demo:
+----------------------------------------------------------------------
+Steps to Run Application:
+----------------------------------------------------------------------
 
-server : 
+1. clone the code and type make from cloned directory to compile the code.It
+   will generate the server binary file.
+
+2. Run the server along with a filename to SAVE the data into  : 
   ./server dbfile
 
-client:
+3. Connect to the server using telent client:
   telnet localhost 15000
 	SET test app
 	+OK
