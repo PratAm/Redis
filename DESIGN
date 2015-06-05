@@ -1,0 +1,22 @@
+                                      ********************************************                  
+                                       CUSTOM REDIS DESIGN FOR STRING DATA ONLY
+                                      ********************************************
+
+The whole desing is broken into 4 parts :
+
+ 1. Storage Module : This module provides the basic layout of the storage medium used for storing the in memory data to some persistent location.
+                     Storage.h is provides the interfaces which every class needs to impliment to be used for storing data.
+										 Currently FileStorage.h is implimented which causes data to be dumped to file.
+										 Any other interface can also be designed just like FileStorage like DBStorage which can cause the data to be dumped to database.
+										 This module is extensible and can be extended to support new type of storage.
+
+ 2. In Memory Storage : This module holds details of how data is stored in memory . It holds a pointer to Storage class which can polymorphically point
+                        to any storage module implementing interface os storage class. Memory Storage doesn't need to know to which storage medium
+												it is storing or reading from. This abstraction allows storage logic to be seperated from in memory logic.
+
+ 3. Socket Module : This modules provides basic api for creating and handling of sockets.
+
+ 4. ServerMain Class : This class has basic parsing of input recieved using telent and calling appropriate handler for GET,SET,SAVE routine.
+
+ 5. Signal Handler : This class provides the api for registering the signal handler. Currently SIGINT is handled and on recieving it main module 
+                     dumps all the data to storage medium provided and then only exits.
