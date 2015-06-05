@@ -1,33 +1,5 @@
 
-#FLAGS= -g -Wall -Wextra -pedantic -Werror
-#GCC=g++ ${D} ${FLAGS}
-#
-#TARGET = server
-#server_objects = ServerSocket.o Socket.o SignalHandler.o FileStorage.o MemoryDS.o ServerMain.o 
-#
-#all : $(TARGET)
-#
-#$(TARGET): $(server_objects)
-#	${GCC} -o $@ $^
-#
-#%.o : %.cpp
-#	 ${GCC} -o $@ -c $<
-#
-#
-## dependency for all .cpp files
-#ServerMain.o:FileStorage.h MemoryDS.h
-#Socket.o: Socket.h
-#ServerSocket.o: ServerSocket.h
-#SignalHandler.o: SignalHandler.h MemoryDS.h
-#FileStorage.o: FileStorage.h Storage.h
-#SocketException.o:SocketException.h
-#MemoryDS.o:MemoryDS.h Storage.h
-#
-#
-#clean:
-#	rm -f $(server_objects) $(TARGET)
-
-FLAGS= -g -Wall -Wextra -pedantic -Werror
+FLAGS     := -Wall -Wextra -pedantic -Werror
 CC        := g++
 LD        := g++
 
@@ -43,7 +15,7 @@ vpath %.cpp $(SRC_DIR)
 
 define make-goal
 $1/%.o: %.cpp
-	$(CC) $(INCLUDES) -c $$< -o $$@
+	$(CC) $(FLAGS) $(INCLUDES) -c $$< -o $$@
 endef
 
 .PHONY: all checkdirs clean
@@ -51,7 +23,7 @@ endef
 all: checkdirs build/server
 
 build/server: $(OBJ)
-	echo building server
+	@echo building server
 	$(LD) $^ -o $@
 
 
@@ -61,8 +33,8 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	echo cleaning files
+	@echo cleaning files
 	@rm -rf $(BUILD_DIR)
-	@rm -rf build
+	@rm build/server
 
 $(foreach bdir,$(BUILD_DIR),$(eval $(call make-goal,$(bdir))))
